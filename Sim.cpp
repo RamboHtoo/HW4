@@ -310,13 +310,7 @@ int main(int argc, char* argv[]) {
 		int progress = percentage(i, data.size());
 		std::cout << "\r" << progress << "%" << std::flush;
 		data_point_pair cur = data[i];
-		if(count_times.find(cur.num_cars) != count_times.end()){
-			std::vector<TimeCode> times_list = count_times[cur.num_cars];
-			times_list.push_back(cur.t);
-			count_times[cur.num_cars] = times_list;
-		} else {
-			count_times[cur.num_cars] = std::vector<TimeCode>{cur.t};
-		}
+		count_times[cur.num_cars].push_back(cur.t);
 	}
 	std::cout << "\n---Simulation Finished---" << std::endl;
 
