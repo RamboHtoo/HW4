@@ -248,9 +248,14 @@ int main(int argc, char* argv[]) {
 	int num_cars = 0; // number of cars (intially 0)
 	int crash_count = 0;
 	int crash_timer = 0; // cool-off period of a crash
+	int last_progress = -1;
 	for(TimeCode t = TimeCode(); t < dur; t = t + TimeCode(0, 0, 1)){
 		int progress = percentage(t.GetTimeCodeAsSeconds(), dur.GetTimeCodeAsSeconds());
-		std::cout << "\r" << progress << "%" << std::flush;
+
+		if(progress != last_progress){
+			std::cout << "\r" << progress << "%" << std::flush;
+			last_progress = progress;
+		}
 
 		// Unit tests are run separately, so they should not run
 		// once for every second of the traffic simulation.
