@@ -252,7 +252,8 @@ int main(int argc, char* argv[]) {
 		int progress = percentage(t.GetTimeCodeAsSeconds(), dur.GetTimeCodeAsSeconds());
 		std::cout << "\r" << progress << "%" << std::flush;
 
-		ALL();
+		// Unit tests are run separately, so they should not run
+		// once for every second of the traffic simulation.
 
 		// --- New Cars Show Up (maybe) ---
 		int num_new_cars = poisson(new_car_rate);
