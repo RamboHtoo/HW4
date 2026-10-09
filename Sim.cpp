@@ -251,14 +251,13 @@ int main(int argc, char* argv[]) {
 	int last_progress = -1;
 	for(TimeCode t = TimeCode(); t < dur; t = t + TimeCode(0, 0, 1)){
 		int progress = percentage(t.GetTimeCodeAsSeconds(), dur.GetTimeCodeAsSeconds());
-
+		// Only print when the percentage changes to avoid repeated
+    	// terminal writes and flushes.
 		if(progress != last_progress){
 			std::cout << "\r" << progress << "%" << std::flush;
 			last_progress = progress;
 		}
 
-		// Unit tests are run separately, so they should not run
-		// once for every second of the traffic simulation.
 
 		// --- New Cars Show Up (maybe) ---
 		int num_new_cars = poisson(new_car_rate);
@@ -311,10 +310,16 @@ int main(int argc, char* argv[]) {
 	// Find the times at which certain amount of cars are present
 	std::cout << "Computing sample statistics..." << std::endl;
 	std::unordered_map<int, std::vector<TimeCode>> count_times;
+	int last_stats_progress = -1;
 	for(size_t i = 0; i < data.size(); i++){
 		int progress = percentage(i, data.size());
-		std::cout << "\r" << progress << "%" << std::flush;
+		if(progress != last_stats_progress){
+			std::cout << "\r" << progress << "%" << std::flush;
+			last_stats_progress = progress;
+		}
 		data_point_pair cur = data[i];
+		// Add directly to the vector stored in the map to avoid
+		// copying the entire vector every time a timestamp is added.
 		count_times[cur.num_cars].push_back(cur.t);
 	}
 	std::cout << "\n---Simulation Finished---" << std::endl;
@@ -348,3 +353,6 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+
+// I used ChatGPT to discuss performance bottlenecks,
+// optimization approaches, SQL aggregation, testing, and code review.
